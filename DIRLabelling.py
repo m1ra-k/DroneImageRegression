@@ -42,7 +42,3 @@ def create_labels():
         for row in screenshot_labels:
             writer.writerow([row, str(image_labels[i])])
             i += 1
-
-
-
-

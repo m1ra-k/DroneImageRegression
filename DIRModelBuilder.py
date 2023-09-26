@@ -2,7 +2,6 @@ import DIRLabelling as dirLabelling
 import DIRProcessing as dirProcessing
 import DIRTraining as dirTraining
 import matplotlib.pyplot as plt
-from keras import datasets, layers, models
 import os
 import pickle
 

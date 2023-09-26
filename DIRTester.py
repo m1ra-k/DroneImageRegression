@@ -1,27 +1,50 @@
-from tensorflow import keras
-from keras import datasets, layers, models
+from keras import models
 import matplotlib.pyplot as plt
 import cv2 as cv
 import numpy as np
 import os
+import csv
+
+filepath = ""
+actual = 0.0
 
 while True:
-    filepath = str(input("Enter the path of the image you would like to test. "))
-    if os.path.isfile(filepath):
+    model = str(input("Enter the name of the model you would like to test. "))
+    if os.path.exists(model):
         break
     else:
-        print("Image not found. Try again.")
+        print("Model", "'" + model + "'", "not found. Try again.")
 
-# load model to test on a picture (must resize to 200, 200 in image editor - fix to do this programatically)
-model = models.load_model("angle_prediction_model_80p.model")
+# load model to test on a picture
+model = models.load_model(model)
 
-img = cv.resize(cv.imread(filepath), (200, 200))
-img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+while True:
+    filepath = str(input("Enter the path of the image you would like to test. If you would like to exit, press *. "))
+    if os.path.isfile(filepath):
 
-plt.imshow(img, cmap=plt.cm.binary)
+        # resizing
+        img = cv.resize(cv.imread(filepath), (200, 200))
+        img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
 
-prediction = model.predict(np.array([img]) / 255)
+        plt.imshow(img, cmap=plt.cm.binary)
 
-print("predicted angle: ", prediction)
+        prediction = model.predict(np.array([img]) / 255)
 
-plt.show()
+        with open("all_screenshot_labels.csv", "r") as csv_file:
+            csv_reader = csv.reader(csv_file)
+
+            for row in csv_reader:
+                extracted_name_png = row[1] + ".png"
+                if os.path.basename(filepath) == extracted_name_png:
+                    actual = row[0]
+                    break
+
+        print("predicted angle: ", prediction[0])
+        print("actual angle: ", actual)
+
+        print("Close the plot to check another image.")
+        plt.show()
+    elif filepath == "*":
+        break
+    else:
+        print("Image", "'" + filepath + "'", "not found. Try again.")
