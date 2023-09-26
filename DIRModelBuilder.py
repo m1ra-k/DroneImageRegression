@@ -48,7 +48,7 @@ elif choice_build_model == "1":
 
         for i in range(5):
             with open(model_names[i] + ".history", "rb") as history_file:
-                test_maes[i] = pickle.load(history_file)
+                test_maes.append(pickle.load(history_file).history["val_mae"])
 
 # for i in test_maes[0]:
 #     print("test accuracies 0: " + str(i))
